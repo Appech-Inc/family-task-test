@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "firstname": "Johnathon",
+        "lastname": "Smith",
+        "email": "john@appech.com",
+        "role": "admin",
+        "avtar": "#4E7FFE"
+    },
+    {
+        "id": 2,
+        "firstname": "Rebekah",
+        "lastname": "Smith",
+        "email": "rebekah@appech.com",
+        "role": "admin",
+        "avtar": "#FEB84E"
+    }
+]

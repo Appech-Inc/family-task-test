@@ -1,0 +1,109 @@
+@inject HttpClient Http
+
+
+<style>
+    .create-wrapper .header {
+        color: #000000;
+        font-size: 32px;
+        line-height: 48px;
+        font-family: "Poppins SemiBold";
+    }
+    .create-wrapper label {
+        color: #000000;
+        font-size: 24px;
+        line-height: 36px;
+        font-family: "Poppins Light";
+    }
+    .create-wrapper .avtar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: inline-block;
+        cursor: pointer;
+    }
+    @@media(max-width: 1400px) {
+        .create-wrapper .header {
+            font-size: 24px;
+            line-height: 32px;
+        }
+        .create-wrapper label {
+            font-size: 16px;
+            line-height: 24px;
+        }
+        .create-wrapper .avtar {
+            width: 32px;
+            height: 32px;
+        }
+    }
+    @@media(max-width: 767.98px) {
+        .create-wrapper .header {
+            font-size: 16px;
+            line-height: 24px;
+        }
+        .create-wrapper .avtar {
+            width: 16px;
+            height: 16px;
+        }
+    }
+</style>
+
+<div class="create-wrapper col-12">
+    <div class="col-12 header pb-5 pb-sm-3"> Add Family Member </div>
+    <div class="row m-0 form">
+        <div class="row m-0 col-12 p-0">
+            <Field class="col-6 custom-input">
+                <FieldLabel>First Name</FieldLabel>
+                <TextEdit @bind-Text="@member.firstname"/>
+            </Field>
+            <Field class="col-6 custom-input">
+                <FieldLabel>Last Name</FieldLabel>
+                <TextEdit @bind-Text="@member.lastname"/>
+            </Field>
+        </div>
+        <div class="row m-0 col-12 p-0">
+            <Field class="col-12 custom-input">
+                <FieldLabel>Email Address</FieldLabel>
+                <TextEdit @bind-Text="@member.email"/>
+            </Field>
+        </div>
+        <div class="row m-0 col-12 p-0">
+            <Field class="col-12 custom-input">
+                <FieldLabel>Roles</FieldLabel>
+                <TextEdit @bind-Text="@member.role"/>
+            </Field>
+        </div>
+        <div class="row m-0 col-12 p-0">
+            <Field class="col-12">
+                <FieldLabel>Select Avtar</FieldLabel>
+                <div class="row m-0 col-12 p-0">
+                    <div class="col-9 p-0">
+                        @foreach (var item in avtars)
+                        {
+                            <div class="avtar" @onclick="@(e => onAvatarSelect(item))" style="background-color: @item;"></div>
+                        }
+                    </div>
+                    <div class="col-3 p-0 text-right">
+                        <Button class="add-btn px-3" @onclick="@onAddClick">Add</Button>
+                    </div>
+                </div>
+            </Field>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter] public EventCallback onAddCallback{get; set;}
+    private FamilyMember member = new FamilyMember();
+    private string[] avtars = new string[] {"#FE4E4E", "#FEB84E", "#FEEC4E", "#3EC732", "#4EFEF3", "#4E7FFE", "#E54EFE", "#C17216"};
+
+    private void onAvatarSelect(string item) {
+        member.avtar = item;
+    }
+
+    private async void onAddClick() {
+        // TODO : API call.
+        await onAddCallback.InvokeAsync(null);
+    }
+
+}

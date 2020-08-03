@@ -1,0 +1,53 @@
+@page "/members"
+@inject HttpClient Http
+
+@if(isLoaded) {
+    <div class="page-wrapper row m-0 col-12 p-0">
+        <div class="col-4 p-0">
+            <WebClient.Shared.Components.LeftMenu MenuItems="@leftMenuItem" OnAddItem="@onAddItem"/>
+        </div>
+        <div class="col-8 p-0">
+            @if(showCreator) {
+                <div class="col-sm-12 col-md-10 offset-md-1 pt-5">
+                    <WebClient.Components.FamilyMemberCreator onAddCallback="@onMemberAdd" />
+                </div>
+            }
+        </div>
+    </div>
+}
+
+
+@code {
+    private FamilyMember[] members;
+    private MenuItem[] leftMenuItem;
+
+    private bool showCreator;
+    private bool isLoaded;
+    protected override async Task OnInitializedAsync () {
+        members = await Http.GetFromJsonAsync<FamilyMember[]> ("sample-data/family-members.json");
+        leftMenuItem = new MenuItem[members.Length];
+        for (int i = 0; i < members.Length; i++)
+        {
+            leftMenuItem[i] = new MenuItem {
+                iconColor = members[i].avtar,
+                label = members[i].firstname,
+                referenceId = members[i].id
+            };
+        }
+        showCreator = true;
+        isLoaded = true;
+    }
+
+    private void onClick(object sender, object e) {
+        
+    }   
+
+    private void onAddItem() {
+        showCreator = true;
+        StateHasChanged();
+    }
+
+    private void onMemberAdd() {
+        Console.WriteLine("on member add");
+    }
+}
