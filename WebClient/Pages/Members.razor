@@ -1,15 +1,17 @@
 @page "/members"
 @inject HttpClient Http
+@using FamilyTask.Shared.Components
+@using FamilyTask.Components
 
 @if(isLoaded) {
     <div class="page-wrapper row m-0 col-12 p-0">
         <div class="col-4 p-0">
-            <WebClient.Shared.Components.LeftMenu MenuItems="@leftMenuItem" OnAddItem="@onAddItem"/>
+            <LeftMenu MenuItems="@leftMenuItem" OnAddItem="@onAddItem"/>
         </div>
         <div class="col-8 p-0">
             @if(showCreator) {
                 <div class="col-sm-12 col-md-10 offset-md-1 pt-5">
-                    <WebClient.Components.FamilyMemberCreator onAddCallback="@onMemberAdd" />
+                    <FamilyMemberCreator onAddCallback="@onMemberAdd" />
                 </div>
             }
         </div>

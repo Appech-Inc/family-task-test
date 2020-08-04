@@ -1,10 +1,12 @@
 @page "/manage-tasks"
 @inject HttpClient Http
+@using FamilyTask.Components
+@using FamilyTask.Shared.Components
 
 @if(isLoaded) {
     <div class="page-wrapper row m-0 col-12 p-0">
         <div class="col-4 p-0">
-            <WebClient.Shared.Components.LeftMenu MenuItems="@leftMenuItem" OnAddItem="@onAddItem"/>
+            <LeftMenu MenuItems="@leftMenuItem" OnAddItem="@onAddItem"/>
         </div>
         <div class="col-8 p-0">
             @if (showLister) {
@@ -19,12 +21,12 @@
                     </div>
                 </div>
                 <div class="col-10 offset-1">
-                    <WebClient.Components.TaskListerComponent Tasks="@tasksToShow"/>
+                    <TaskListerComponent Tasks="@tasksToShow"/>
                 </div>
             }
             @if(showCreator) {
                 <div class="col-10 offset-1 pt-5">
-                    <WebClient.Components.FamilyMemberCreator onAddCallback="@onMemberAdd" />
+                    <FamilyMemberCreator onAddCallback="@onMemberAdd" />
                 </div>
             }
         </div>
