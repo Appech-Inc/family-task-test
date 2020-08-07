@@ -1,12 +1,13 @@
 @page "/members"
-@inject HttpClient Http
+@inherits MembersBase
+
 @using FamilyTask.Shared.Components
 @using FamilyTask.Components
 
 @if(isLoaded) {
     <div class="page-wrapper row m-0 col-12 p-0">
         <div class="col-4 p-0">
-            <LeftMenu MenuItems="@leftMenuItem" OnAddItem="@onAddItem"/>
+            <LeftMenu MenuItems="@leftMenuItem.ToArray()" OnAddItem="@onAddItem"/>
         </div>
         <div class="col-8 p-0">
             @if(showCreator) {
@@ -16,40 +17,4 @@
             }
         </div>
     </div>
-}
-
-
-@code {
-    private FamilyMember[] members;
-    private MenuItem[] leftMenuItem;
-
-    private bool showCreator;
-    private bool isLoaded;
-    protected override async Task OnInitializedAsync () {
-        members = await Http.GetFromJsonAsync<FamilyMember[]> ("sample-data/family-members.json");
-        leftMenuItem = new MenuItem[members.Length];
-        for (int i = 0; i < members.Length; i++)
-        {
-            leftMenuItem[i] = new MenuItem {
-                iconColor = members[i].avtar,
-                label = members[i].firstname,
-                referenceId = members[i].id
-            };
-        }
-        showCreator = true;
-        isLoaded = true;
-    }
-
-    private void onClick(object sender, object e) {
-        
-    }   
-
-    private void onAddItem() {
-        showCreator = true;
-        StateHasChanged();
-    }
-
-    private void onMemberAdd() {
-        Console.WriteLine("on member add");
-    }
 }

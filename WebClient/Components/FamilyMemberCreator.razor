@@ -1,5 +1,3 @@
-@inject HttpClient Http
-
 @namespace FamilyTask.Components
 
 
@@ -95,7 +93,7 @@
 
 @code {
 
-    [Parameter] public EventCallback onAddCallback{get; set;}
+    [Parameter] public EventCallback<FamilyMember> onAddCallback{get; set;}
     private FamilyMember member = new FamilyMember();
     private string[] avtars = new string[] {"#FE4E4E", "#FEB84E", "#FEEC4E", "#3EC732", "#4EFEF3", "#4E7FFE", "#E54EFE", "#C17216"};
 
@@ -103,9 +101,8 @@
         member.avtar = item;
     }
 
-    private async void onAddClick() {
-        // TODO : API call.
-        await onAddCallback.InvokeAsync(null);
+    private async void onAddClick() {        
+        await onAddCallback.InvokeAsync(member);
     }
 
 }

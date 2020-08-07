@@ -27,6 +27,11 @@ namespace WebApi
             {
                 options.UseSqlServer(configuration.GetSection("ConnectionStrings:SqlDb").Value);
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Open", builder => builder.AllowAnyOrigin().AllowAnyHeader());
+            });
         }
     }
 }

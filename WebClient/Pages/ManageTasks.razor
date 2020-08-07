@@ -44,10 +44,11 @@
     protected override async Task OnInitializedAsync () {
         members = await Http.GetFromJsonAsync<FamilyMember[]> ("sample-data/family-members.json");
         allTasks = await Http.GetFromJsonAsync<TaskModel[]> ("sample-data/tasks.json");
+       
         leftMenuItem = new MenuItem[members.Length + 1];
         leftMenuItem[0] = new MenuItem {
                 label = "All Tasks",
-                referenceId = 0,
+                referenceId = Guid.Empty,
                 isActive = true
         };
         leftMenuItem[0].ClickCallback += showAllTasks;
@@ -73,7 +74,7 @@
     }
 
     private void onItemClick(object sender, object e) {
-        int val = (int)e.GetType().GetProperty("referenceId").GetValue(e);
+        Guid val = (Guid)e.GetType().GetProperty("referenceId").GetValue(e);
         makeMenuItemActive(e);
         if(allTasks != null && allTasks.Length > 0) {
             tasksToShow = allTasks.Where(item => {

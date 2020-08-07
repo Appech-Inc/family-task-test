@@ -49,6 +49,8 @@ namespace WebApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Family Task API");
             });
 
+            app.UseCors("Open");
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
