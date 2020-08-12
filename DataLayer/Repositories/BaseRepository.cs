@@ -48,25 +48,7 @@ namespace DataLayer
             return await
                 Query.ToListAsync(cancellationToken);
         }
-
-        public TRepository StartTransaction()
-        {
-            Context.Database.BeginTransaction();
-            return this as TRepository;
-        }
-
-        public TRepository CommitTransaction()
-        {
-            Context.Database.CommitTransaction();
-            return this as TRepository;
-        }
-
-        public TRepository RollbackTransaction()
-        {
-            Context.Database.RollbackTransaction();
-            return this as TRepository;
-        }
-
+      
         public TRepository NoTrack()
         {
             Query.AsNoTracking();

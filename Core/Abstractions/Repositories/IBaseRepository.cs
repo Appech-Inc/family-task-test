@@ -32,24 +32,6 @@ namespace Core.Abstractions.Repositories
         Task<IEnumerable<TEntity>> ToListAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Starts tracking a transaction against the database.
-        /// </summary>
-        /// <returns><see cref="IBaseRepository{TIdentifier,TEntity, TEntity}"/></returns>
-        TRepository StartTransaction();
-
-        /// <summary>
-        /// Commits all changes to the Database since starting a transaction.
-        /// </summary>
-        /// <returns><see cref="TEntity"/></returns>
-        TRepository CommitTransaction();
-
-        /// <summary>
-        /// Rollback a current transaction.
-        /// </summary>
-        /// <returns><see cref="IBaseRepository{TIdentifier, TEntity, TRepository}"/></returns>
-        TRepository RollbackTransaction();
-
-        /// <summary>
         /// Make the query Non Tracking
         /// </summary>
         /// <returns><see cref="IBaseRepository{TIdentifier, TEntity, TRepository}"/></returns>

@@ -11,10 +11,7 @@ namespace DataLayer
         public MemberRepository(FamilyTaskContext context) : base(context)
         { }
 
-        IMemberRepository IBaseRepository<Guid, Member, IMemberRepository>.CommitTransaction()
-        {
-            return base.CommitTransaction();
-        }
+       
 
         IMemberRepository IBaseRepository<Guid, Member, IMemberRepository>.NoTrack()
         {
@@ -26,14 +23,6 @@ namespace DataLayer
             return base.Reset();
         }
 
-        IMemberRepository IBaseRepository<Guid, Member, IMemberRepository>.RollbackTransaction()
-        {
-            return base.RollbackTransaction();
-        }
-
-        IMemberRepository IBaseRepository<Guid, Member, IMemberRepository>.StartTransaction()
-        {
-            return base.StartTransaction();
-        }
+       
     }
 }

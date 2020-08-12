@@ -57,12 +57,14 @@
   <ItemGroup>
     <Folder Include="Properties" />
     <Folder Include="dbo" />
-    <Folder Include="dbo\tables" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\tables\Member.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Sql.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="dbo\tables\Task.sql" />
   </ItemGroup>
 </Project>
