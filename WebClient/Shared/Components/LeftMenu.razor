@@ -1,5 +1,9 @@
+@using Core.Extensions.ModelConversion
+@using Domain.ClientSideModels
 
-@namespace FamilyTask.Shared.Components
+@namespace WebClient.Shared.Components
+
+@inject WebClient.Abstractions.IMemberDataService memberService
 <style>
     .menu-wrapper {
         background: #FBFBFB;
@@ -65,7 +69,7 @@
 <div class="menu-wrapper col-12 p-0">
     @if(MenuItems != null && MenuItems.Length > 0) {
         @foreach (var item in MenuItems) {
-            <div class="menu-item col-10 offset-1 p-3 my-4 p-sm-2 @(item.isActive ? "active" : "")" @onclick="@(e => item.InvokClickCallback(item))">
+            <div class="menu-item col-10 offset-1 p-3 my-4 p-sm-2 @(item.isActive ? "active" : "")" @onclick="@(e => SelectMember(item.referenceId))">
                 @if(item.iconColor != null) {
                     <div class="avtar mr-3" style="background-color: @(item.iconColor);"> </div>
                 }
@@ -80,7 +84,63 @@
 </div>
 
 @code {
+    protected override Task OnInitializedAsync()
+    {
+        MenuItems = memberService.Members.ToMenuItems();
+        memberService.MembersChanged += MemberServiceOnMembersChanged;
+        memberService.SelectedMemberChanged += MemberServiceOnSelectedMemberChanged;
+
+        if (memberService.SelectedMember != null)
+        {
+            SetActiveItem(memberService.SelectedMember.Id);
+        }
+
+        return base.OnInitializedAsync();
+    }
+
+    private void MemberServiceOnSelectedMemberChanged(object sender, EventArgs e)
+    {
+        InactivateAllItems();
+        if(memberService.SelectedMember != null)
+            SetActiveItem(memberService.SelectedMember.Id);
+        StateHasChanged();
+    }
+
+    private void MemberServiceOnMembersChanged(object sender, EventArgs e)
+    {
+        MenuItems = memberService.Members.ToMenuItems();
+        StateHasChanged();
+    }
+
     [Parameter] public MenuItem[] MenuItems {get; set;}
 
-    [Parameter] public EventCallback OnAddItem {get; set;}
+    private void InactivateAllItems()
+    {
+        foreach (var menuItem in MenuItems)
+        {
+            menuItem.isActive = false;
+        }
+    }
+
+    private void SetActiveItem(Guid id)
+    {
+        foreach (var menuItem in MenuItems)
+        {
+            if (menuItem.referenceId == id)
+            {
+                menuItem.isActive = true;
+            }
+        }
+    }
+
+    void SelectMember(Guid id)
+    {
+        memberService.SelectMember(id);
+    }
+
+    private void OnAddItem()
+    {
+        memberService.SelectNullMember();
+    }
+
 }

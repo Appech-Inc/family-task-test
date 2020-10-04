@@ -49,7 +49,12 @@ namespace WebApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Family Task API");
             });
 
-            app.UseCors("Open");
+            app.UseCors(options =>
+            {
+                options.AllowAnyOrigin();
+                options.AllowAnyHeader();
+                options.AllowAnyMethod();
+            });
 
             app.UseHttpsRedirection();
 

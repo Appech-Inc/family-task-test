@@ -1,18 +1,19 @@
 @page "/members"
 @inherits MembersBase
 
-@using FamilyTask.Shared.Components
-@using FamilyTask.Components
+@using WebClient.Components
+@using WebClient.Shared.Components
 
 @if(isLoaded) {
     <div class="page-wrapper row m-0 col-12 p-0">
         <div class="col-4 p-0">
-            <LeftMenu MenuItems="@leftMenuItem.ToArray()" OnAddItem="@onAddItem"/>
+            <LeftMenu />
         </div>
         <div class="col-8 p-0">
-            @if(showCreator) {
+            @if (showCreator)
+            {
                 <div class="col-sm-12 col-md-10 offset-md-1 pt-5">
-                    <FamilyMemberCreator onAddCallback="@onMemberAdd" />
+                    <FamilyMemberCreator></FamilyMemberCreator>
                 </div>
             }
         </div>

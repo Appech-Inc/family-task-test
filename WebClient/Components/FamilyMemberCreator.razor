@@ -1,4 +1,8 @@
-@namespace FamilyTask.Components
+@using Domain.ViewModel
+@using WebClient.Abstractions
+
+@namespace WebClient.Components
+@inject IMemberDataService memberDataService
 
 
 <style>
@@ -53,23 +57,23 @@
         <div class="row m-0 col-12 p-0">
             <Field class="col-6 custom-input">
                 <FieldLabel>First Name</FieldLabel>
-                <TextEdit @bind-Text="@member.firstname"/>
+                <TextEdit @bind-Text="@member.FirstName"/>
             </Field>
             <Field class="col-6 custom-input">
                 <FieldLabel>Last Name</FieldLabel>
-                <TextEdit @bind-Text="@member.lastname"/>
+                <TextEdit @bind-Text="@member.LastName"/>
             </Field>
         </div>
         <div class="row m-0 col-12 p-0">
             <Field class="col-12 custom-input">
                 <FieldLabel>Email Address</FieldLabel>
-                <TextEdit @bind-Text="@member.email"/>
+                <TextEdit @bind-Text="@member.Email"/>
             </Field>
         </div>
         <div class="row m-0 col-12 p-0">
             <Field class="col-12 custom-input">
                 <FieldLabel>Roles</FieldLabel>
-                <TextEdit @bind-Text="@member.role"/>
+                <TextEdit @bind-Text="@member.Roles"/>
             </Field>
         </div>
         <div class="row m-0 col-12 p-0">
@@ -77,13 +81,21 @@
                 <FieldLabel>Select Avtar</FieldLabel>
                 <div class="row m-0 col-12 p-0">
                     <div class="col-9 p-0">
-                        @foreach (var item in avtars)
+                        @foreach (var item in avatars)
                         {
-                            <div class="avtar" @onclick="@(e => onAvatarSelect(item))" style="background-color: @item;"></div>
+                            <div class="avtar" @onclick="@(e => OnAvatarSelect(item))" style="background-color: @item;"></div>
                         }
                     </div>
                     <div class="col-3 p-0 text-right">
-                        <Button class="add-btn px-3" @onclick="@onAddClick">Add</Button>
+                        @if (member.Id == Guid.Empty)
+                        {
+                            <Button class="add-btn px-3" @onclick="@OnAddClick">Add Member</Button>
+                        }
+                        else
+                        {
+                            <Button class="add-btn px-3" @onclick="@OnUpdateClick">Update Member</Button>
+                        }
+                        
                     </div>
                 </div>
             </Field>
@@ -93,16 +105,36 @@
 
 @code {
 
-    [Parameter] public EventCallback<FamilyMember> onAddCallback{get; set;}
-    private FamilyMember member = new FamilyMember();
-    private string[] avtars = new string[] {"#FE4E4E", "#FEB84E", "#FEEC4E", "#3EC732", "#4EFEF3", "#4E7FFE", "#E54EFE", "#C17216"};
+    private MemberVm member;
+    private string[] avatars = new string[] { "#FE4E4E", "#FEB84E", "#FEEC4E", "#3EC732", "#4EFEF3", "#4E7FFE", "#E54EFE", "#C17216" };
 
-    private void onAvatarSelect(string item) {
-        member.avtar = item;
+    protected override Task OnInitializedAsync()
+    {
+        member = memberDataService.SelectedMember ?? new MemberVm();
+        memberDataService.SelectedMemberChanged += MemberDataServiceOnSelectedMemberChanged;
+        return base.OnInitializedAsync();
     }
 
-    private async void onAddClick() {        
-        await onAddCallback.InvokeAsync(member);
+    private void MemberDataServiceOnSelectedMemberChanged(object sender, EventArgs e)
+    {
+        member = memberDataService.SelectedMember ?? new MemberVm();
+
+        StateHasChanged();
+    }
+
+    private void OnUpdateClick()
+    {
+        memberDataService.UpdateMember(member);
+    }
+
+    private void OnAddClick()
+    {
+        memberDataService.CreateMember(member);
+    }
+
+    private void OnAvatarSelect(string item)
+    {
+        member.Avatar = item;
     }
 
 }

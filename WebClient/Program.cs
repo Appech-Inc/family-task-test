@@ -33,7 +33,9 @@ namespace WebClient
 
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            builder.Services.AddHttpClient<IMemberDataService, MemberDataService>(client => client.BaseAddress = new Uri("https://localhost:5001/api/"));
+            builder.Services.AddHttpClient("FamilyTaskAPI", client => client.BaseAddress = new Uri("https://localhost:5001/api/"));
+            builder.Services.AddSingleton<IMemberDataService, MemberDataService>();
+            builder.Services.AddSingleton<ITaskDataService, TaskDataService>();
 
             var host = builder.Build();
 
