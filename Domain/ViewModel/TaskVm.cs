@@ -1,7 +1,4 @@
-﻿using Domain.Commands;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace Domain.ViewModel
 {
@@ -11,7 +8,5 @@ namespace Domain.ViewModel
         public string Subject { get; set; }
         public Nullable<Guid> AssignedMemberId { get; set; }
         public bool IsComplete { get; set; }
-
-
     }
 }
