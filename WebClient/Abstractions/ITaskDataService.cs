@@ -20,7 +20,7 @@ namespace WebClient.Abstractions
         event EventHandler TaskSelected;
 
         void SelectTask(Guid id);
-        void ToggleTask(Guid id);
+        Task ToggleTask(Guid id);
         Task AddTask(TaskModel model);
     }
 }

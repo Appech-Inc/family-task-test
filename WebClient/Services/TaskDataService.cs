@@ -40,6 +40,11 @@ namespace WebClient.Services
             return await httpClient.PostJsonAsync<CreateTaskCommandResult>("tasks", command);
         }
 
+        private async Task<UpdateTaskCommandResult> Update(UpdateTaskCommand command)
+        {
+            return await httpClient.PutJsonAsync<UpdateTaskCommandResult>($"tasks/{command.Id}", command);
+        }
+
         public List<TaskModel> Tasks => taskVms.Select(t => new TaskModel(t)).ToList();
         public TaskModel SelectedTask { get; private set; }
 
@@ -54,17 +59,30 @@ namespace WebClient.Services
             TasksUpdated?.Invoke(this, null);
         }
 
-        public void ToggleTask(Guid id)
+        public async Task ToggleTask(Guid id)
         {
-            foreach (var taskModel in Tasks)
+            var taskModel = Tasks.FirstOrDefault(t => t.Id == id);
+            taskModel.IsDone = !taskModel.IsDone;
+
+            var taskVm = taskModel.ConvertToTaskVm();
+            var result = await Update(taskVm.ToUpdateTaskCommand());
+
+            if(result != null)
             {
-                if (taskModel.Id == id)
+                var updatedList = (await GetAllTasks()).Payload;
+
+                if (updatedList != null)
                 {
-                    taskModel.IsDone = !taskModel.IsDone;
+                    taskVms = updatedList;
+                    TasksUpdated?.Invoke(this, null);
+                    return;
                 }
+                UpdateTaskFailed?.Invoke(this, "The save was successful, but we can no longer get an updated list of members from the server.");
+
+                return;
             }
 
-            TasksUpdated?.Invoke(this, null);
+            UpdateTaskFailed?.Invoke(this, "Unable to save changes.");
         }
 
         public async Task AddTask(TaskModel model)
