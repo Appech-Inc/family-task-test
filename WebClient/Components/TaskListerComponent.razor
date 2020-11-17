@@ -55,7 +55,7 @@
             </div>
             <div class="col-2 p-0 d-flex justify-content-end align-items-center">
                 @if (item.Member != null) {
-                    <div class="avtar mr-1" style="background-color: @selectedMember.Avatar;"></div>
+                    <div class="avtar mr-1" style="background-color: @selectedMember?.Avatar;"></div>
                 }
                 <img class="delete-icon" src="/assets/images/delete-icon.svg"/>
             </div>
