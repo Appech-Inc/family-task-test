@@ -21,6 +21,7 @@ namespace WebClient.Abstractions
 
         void SelectTask(Guid id);
         Task ToggleTask(Guid id);
+        Task ReassignTask(TaskModel model, Guid newAssigneeId);
         Task AddTask(TaskModel model);
     }
 }

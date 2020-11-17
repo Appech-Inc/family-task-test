@@ -64,25 +64,7 @@ namespace WebClient.Services
             var taskModel = Tasks.FirstOrDefault(t => t.Id == id);
             taskModel.IsDone = !taskModel.IsDone;
 
-            var taskVm = taskModel.ConvertToTaskVm();
-            var result = await Update(taskVm.ToUpdateTaskCommand());
-
-            if(result != null)
-            {
-                var updatedList = (await GetAllTasks()).Payload;
-
-                if (updatedList != null)
-                {
-                    taskVms = updatedList;
-                    TasksUpdated?.Invoke(this, null);
-                    return;
-                }
-                UpdateTaskFailed?.Invoke(this, "The save was successful, but we can no longer get an updated list of members from the server.");
-
-                return;
-            }
-
-            UpdateTaskFailed?.Invoke(this, "Unable to save changes.");
+            await UpdateTaskModel(taskModel);
         }
 
         public async Task AddTask(TaskModel model)
@@ -106,6 +88,36 @@ namespace WebClient.Services
             }
 
             CreateTaskFailed?.Invoke(this, "Unable to create record.");
+        }
+
+        public async Task ReassignTask(TaskModel taskModel, Guid newAssigneeId)
+        {
+            taskModel.Member = newAssigneeId;
+            
+            await UpdateTaskModel(taskModel);
+        }
+
+        private async Task UpdateTaskModel(TaskModel taskModel)
+        {
+            var taskVm = taskModel.ConvertToTaskVm();
+            var result = await Update(taskVm.ToUpdateTaskCommand());
+
+            if(result != null)
+            {
+                var updatedList = (await GetAllTasks()).Payload;
+
+                if (updatedList != null)
+                {
+                    taskVms = updatedList;
+                    TasksUpdated?.Invoke(this, null);
+                    return;
+                }
+                UpdateTaskFailed?.Invoke(this, "The save was successful, but we can no longer get an updated list of members from the server.");
+
+                return;
+            }
+
+            UpdateTaskFailed?.Invoke(this, "Unable to save changes.");
         }
 
     }
