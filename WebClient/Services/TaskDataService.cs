@@ -8,6 +8,8 @@ using Domain.ViewModel;
 using Microsoft.AspNetCore.Components;
 using WebClient.Abstractions;
 using WebClient.Shared.Models;
+using Domain.Commands;
+using Core.Extensions.ModelConversion;
 
 namespace WebClient.Services
 {
@@ -33,12 +35,18 @@ namespace WebClient.Services
             return await httpClient.GetJsonAsync<GetAllTasksQueryResult>("tasks");
         }
 
+        private async Task<CreateTaskCommandResult> Create(CreateTaskCommand command)
+        {            
+            return await httpClient.PostJsonAsync<CreateTaskCommandResult>("tasks", command);
+        }
+
         public List<TaskModel> Tasks => taskVms.Select(t => new TaskModel(t)).ToList();
         public TaskModel SelectedTask { get; private set; }
 
-
         public event EventHandler TasksUpdated;
         public event EventHandler TaskSelected;
+        public event EventHandler<string> CreateTaskFailed;
+        public event EventHandler<string> UpdateTaskFailed;
 
         public void SelectTask(Guid id)
         {
@@ -59,10 +67,28 @@ namespace WebClient.Services
             TasksUpdated?.Invoke(this, null);
         }
 
-        public void AddTask(TaskModel model)
+        public async Task AddTask(TaskModel model)
         {
-            Tasks.Add(model);
-            TasksUpdated?.Invoke(this, null);
+            var taskVm = model.ConvertToTaskVm();
+            var result = await Create(taskVm.ToCreateTaskCommand());
+
+            if (result != null)
+            {
+                var updatedList = (await GetAllTasks()).Payload;
+
+                if (updatedList != null)
+                {
+                    taskVms = updatedList;
+                    TasksUpdated?.Invoke(this, null);
+                    return;
+                }
+                UpdateTaskFailed?.Invoke(this, "The creation was successful, but we can no longer get an updated list of members from the server.");
+
+                return;
+            }
+
+            CreateTaskFailed?.Invoke(this, "Unable to create record.");
         }
+
     }
 }
