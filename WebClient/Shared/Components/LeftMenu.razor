@@ -67,7 +67,7 @@
 </style>
 
 <div class="menu-wrapper col-12 p-0">
-    @if(MenuItems != null && MenuItems.Length > 0) {
+    @if(MenuItems != null && MenuItems.Count > 0) {
         @foreach (var item in MenuItems) {
             <div class="menu-item col-10 offset-1 p-3 my-4 p-sm-2 @(item.isActive ? "active" : "")" @onclick="@(e => SelectMember(item.referenceId))">
                 @if(item.iconColor != null) {
@@ -86,7 +86,8 @@
 @code {
     protected override Task OnInitializedAsync()
     {
-        MenuItems = memberService.Members.ToMenuItems();
+        MenuItems = new List<MenuItem> {new MenuItem() {label = "All Tasks"}};
+        MenuItems.AddRange(memberService.Members.ToMenuItems());
         memberService.MembersChanged += MemberServiceOnMembersChanged;
         memberService.SelectedMemberChanged += MemberServiceOnSelectedMemberChanged;
 
@@ -108,11 +109,13 @@
 
     private void MemberServiceOnMembersChanged(object sender, EventArgs e)
     {
-        MenuItems = memberService.Members.ToMenuItems();
+        MenuItems.Clear();
+        MenuItems.Add(new MenuItem() { label = "All Tasks" });
+        MenuItems.AddRange(memberService.Members.ToMenuItems());
         StateHasChanged();
     }
 
-    [Parameter] public MenuItem[] MenuItems {get; set;}
+    public List<MenuItem> MenuItems {get; set;}
 
     private void InactivateAllItems()
     {
