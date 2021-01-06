@@ -48,5 +48,31 @@ namespace Core.Extensions.ModelConversion
             };
             return command;
         }
+
+        public static CreateTaskCommand ToCreateTaskCommand(this TaskVm model)
+        {
+            return new CreateTaskCommand
+            {
+                Subject = model.Subject,
+                AssignedToId = model.AssignedToId
+            };
+        }
+
+        public static AssignTaskCommand ToAssignTaskCommand(this TaskVm model)
+        {
+            return new AssignTaskCommand
+            {
+                Id = model.Id,
+                AssignedToId = model.AssignedToId ?? default(Guid)
+            };
+        }
+
+        public static CompleteTaskCommand ToCompleteTaskCommand(this TaskVm model)
+        {
+            return new CompleteTaskCommand
+            {
+                Id = model.Id
+            };
+        }
     }
 }
