@@ -2,7 +2,6 @@
 @inject HttpClient http
 @using Domain.ViewModel
 @using WebClient.Abstractions
-@using WebClient.Shared.Models
 @using WebClient.Components
 @using WebClient.Shared.Components
 @inject IMemberDataService memberService;
@@ -58,18 +57,17 @@
 
     private void OnAddItem()
     {
-        var task = new TaskModel()
+        var task = new TaskVm()
         {
-            Id = Guid.NewGuid(),
-            IsDone = false,
-            Text = newTask
+            IsComplete = false,
+            Subject = newTask,
         };
 
         newTask = string.Empty;
 
         if (memberService.SelectedMember != null)
         {
-            task.Member = memberService.SelectedMember.Id;
+            task.AssignedToId = memberService.SelectedMember.Id;
         }
         taskDataService.AddTask(task);
         StateHasChanged();

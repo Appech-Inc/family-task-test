@@ -4,6 +4,8 @@
 @namespace WebClient.Shared.Components
 
 @inject WebClient.Abstractions.IMemberDataService memberService
+@inject WebClient.Abstractions.ITaskDataService taskService
+@inject IJSRuntime JSRuntime
 <style>
     .menu-wrapper {
         background: #FBFBFB;
@@ -64,13 +66,26 @@
             height: 16px;
         }
     }
+    .menu-wrapper .menu-item.no-drop {
+        border: 2px dashed red;
+    }
+    .menu-wrapper .menu-item.can-drop {
+        border: 2px dashed green;
+    }
 </style>
 
 <div class="menu-wrapper col-12 p-0">
     @if(MenuItems != null && MenuItems.Count > 0) {
         @foreach (var item in MenuItems) {
-            <div class="menu-item col-10 offset-1 p-3 my-4 p-sm-2 @(item.isActive ? "active" : "")" @onclick="@(e => SelectMember(item.referenceId))">
-                @if(item.iconColor != null) {
+            <div class="menu-item col-10 offset-1 p-3 my-4 p-sm-2 @(item.isActive ? "active" : "")" @onclick="@(e => SelectMember(item.referenceId))"
+                 id="@item.referenceId"
+                 @ondrop="@(() => OnDragDrop(item.referenceId))"
+                 @ondragenter="@(() => OnDragEnter(item.referenceId))"
+                 @ondragleave="@(() => OnDragLeave(item.referenceId))"
+                 ondragover="event.preventDefault();"
+                 ondragstart="event.dataTransfer.setData('', event.target.id);">
+
+                @if (item.iconColor != null) {
                     <div class="avtar mr-3" style="background-color: @(item.iconColor);"> </div>
                 }
                 <div class="label"> @item.label </div>
@@ -138,7 +153,10 @@
 
     void SelectMember(Guid id)
     {
-        memberService.SelectMember(id);
+        if (id == default(Guid))
+            memberService.SelectNullMember();
+        else
+            memberService.SelectMember(id);
     }
 
     private void OnAddItem()
@@ -146,4 +164,31 @@
         memberService.SelectNullMember();
     }
 
+    private async Task OnDragEnter(Guid memberId)
+    {
+        if (memberId == default(Guid))
+            return;
+
+        await JSRuntime.InvokeVoidAsync("AddClass", memberId.ToString(), taskService.DragedTask.AssignedToId == memberId ? "no-drop" : "can-drop");
+    }
+
+    private async Task OnDragLeave(Guid memberId)
+    {
+        if (memberId == default(Guid))
+            return;
+
+        await JSRuntime.InvokeVoidAsync("RemoveClass", memberId.ToString(), "no-drop");
+        await JSRuntime.InvokeVoidAsync("RemoveClass", memberId.ToString(), "can-drop");
+    }
+
+    private async Task OnDragDrop(Guid memberId)
+    {
+        await OnDragLeave(memberId);
+
+        if (memberId == default(Guid) || taskService.DragedTask.AssignedToId == memberId)
+            return;
+
+        taskService.DragedTask.AssignedToId = memberId;
+        await taskService.AssignTask(taskService.DragedTask);
+    }
 }

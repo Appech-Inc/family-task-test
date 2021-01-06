@@ -1,9 +1,9 @@
 @using WebClient.Abstractions
-@using WebClient.Shared.Models
 @using Domain.ViewModel
 
 @inject ITaskDataService taskService;
 @inject IMemberDataService memberService;
+@inject IJSRuntime JSRuntime
 
 @namespace WebClient.Components
 
@@ -42,19 +42,24 @@
             height: 16px;
         }
     }
+    .task-wrapper .task-item[draggable="true"] {
+        cursor: grab;
+    }
 </style>
 
 <div class="task-wrapper">
     @foreach (var item in tasks)
     {
-        <div class="task-item p-3 my-3 row m-0">
+        <div class="task-item p-3 my-3 row m-0 draggable"
+             draggable="true"
+             @ondragstart="@(() => taskService.SelectDraggedTask(item.Id))">
             <div class="col-10 p-0">
-                <Check TValue="bool" Checked="@item.IsDone" CheckedChanged="@(val => ToggleTask(item))">
-                    <span class="@(item.IsDone ? "done-text" : "")">@item.Text</span>
+                <Check Name="@item.Id.ToString()" TValue="bool" Checked="@item.IsComplete" CheckedChanged="@(val => ToggleTask(item))">
+                    <span class="@(item.IsComplete ? "done-text" : "")">@item.Subject</span>
                 </Check>
             </div>
             <div class="col-2 p-0 d-flex justify-content-end align-items-center">
-                @if (item.Member != null) {
+                @if (item.AssignedToId != null && selectedMember != null) {
                     <div class="avtar mr-1" style="background-color: @selectedMember.Avatar;"></div>
                 }
                 <img class="delete-icon" src="/assets/images/delete-icon.svg"/>
@@ -64,21 +69,26 @@
 </div>
 
 @code  {
-    private List<TaskModel> tasks = new List<TaskModel>();
+    private IEnumerable<TaskVm> tasks = new List<TaskVm>();
     private MemberVm selectedMember;
 
     protected override Task OnInitializedAsync()
     {
         memberService.SelectedMemberChanged += MemberServiceOnSelectedMemberChanged;
         taskService.TasksUpdated += TaskServiceOnTasksUpdated;
+        taskService.CompleteTaskFailed += TaskServiceOnCompleteTaskFailed;
         LoadCurrentTasks();
         return base.OnInitializedAsync();
     }
 
-    private void ToggleTask(TaskModel model)
+    private async Task ToggleTask(TaskVm model)
     {
-        taskService.ToggleTask(model.Id);
-        StateHasChanged();
+        if (!model.IsComplete)
+        {
+            model.IsComplete = true;
+            await taskService.ToggleTask(model.Id);
+            StateHasChanged();
+        }
     }
 
     private void TaskServiceOnTasksUpdated(object sender, EventArgs e)
@@ -91,18 +101,23 @@
         LoadCurrentTasks();
     }
 
+    private void TaskServiceOnCompleteTaskFailed(object sender, string message)
+    {
+        LoadCurrentTasks();
+    }
+
     private void LoadCurrentTasks()
     {
         selectedMember = memberService.SelectedMember;
 
         if (selectedMember == null || selectedMember.Id == Guid.Empty)
         {
-            tasks = taskService.Tasks;
+            tasks = taskService.Tasks ?? new List<TaskVm>();
             StateHasChanged();
             return;
         };
 
-        tasks = taskService.Tasks.Where(t => t.Member == selectedMember.Id).ToList();
+        tasks = taskService.Tasks.Where(t => t.AssignedToId == selectedMember.Id).ToList();
         StateHasChanged();
     }
 
