@@ -66,6 +66,6 @@
     <None Include="Sql.publish.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="dbo\tables\Task.sql" />
+    <Build Include="dbo\tables\Task.sql" />
   </ItemGroup>
 </Project>
