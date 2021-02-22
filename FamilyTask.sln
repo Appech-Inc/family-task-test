@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{65360535-AD99-45ED-9300-75E36DC19A3F}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Sql", "Sql\Sql.sqlproj", "{AE77DCD7-4AF5-4393-A819-9FB389FB0D55}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,12 +45,6 @@ Global
 		{65360535-AD99-45ED-9300-75E36DC19A3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65360535-AD99-45ED-9300-75E36DC19A3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65360535-AD99-45ED-9300-75E36DC19A3F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AE77DCD7-4AF5-4393-A819-9FB389FB0D55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AE77DCD7-4AF5-4393-A819-9FB389FB0D55}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AE77DCD7-4AF5-4393-A819-9FB389FB0D55}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{AE77DCD7-4AF5-4393-A819-9FB389FB0D55}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AE77DCD7-4AF5-4393-A819-9FB389FB0D55}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AE77DCD7-4AF5-4393-A819-9FB389FB0D55}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

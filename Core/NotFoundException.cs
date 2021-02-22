@@ -13,6 +13,8 @@ namespace Core
         }
 
 
+
+        //Some Chnages
         public string ObjectType { get; set; }
         public TIdentifier Id { get; set; }
     }
