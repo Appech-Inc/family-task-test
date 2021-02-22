@@ -12,7 +12,6 @@ namespace Core
             this.Id = id;
         }
 
-
         public string ObjectType { get; set; }
         public TIdentifier Id { get; set; }
     }
